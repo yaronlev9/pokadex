@@ -17,14 +17,11 @@ async function searchPokemon(){
 };
 
 async function addPokemonNames(){
-  const options = {
-    method: "GET"
-  }
   document.getElementById(this.id).removeEventListener("click", addPokemonNames);
   document.getElementById(this.id).addEventListener("click", removePokemonNames);
   let el = document.getElementById(this.id);
   let lst = document.createElement("ol");
-  const data = await fetch(`http://pokeapi.co/api/v2/type/${this.id}`).then(response => response.json());
+  const data = await fetch(`http://pokeapi.co/api/v2/type/${this.id}`, {method:"GET"}).then(response => response.json());
   for (let name of data.pokemon){
     let pokemon = document.createElement("li");
     pokemon.setAttribute("id", name.pokemon.name);
@@ -34,7 +31,7 @@ async function addPokemonNames(){
   }
   el.appendChild(lst); 
 }
-// axios.get(`http://pokeapi.co/api/v2/type/${this.id}`);
+
 function removePokemonNames(){
   document.getElementById(this.id).children[0].remove();
   document.getElementById(this.id).removeEventListener("click", removePokemonNames);
@@ -52,47 +49,28 @@ function makeDiv (name, height, weight, picture, back_pic, types){
     typeArr.push(type.type.name);
   }
   let typesList = typeArr.join("</li><li> ");
-  let htmlText;
+  let picText;
   if (back_pic !== null){
     if (picture !==null){
-      htmlText = `
-    <div class="pokemonContainer">
-      <div>Name: ${name}</div>
-      <div>height: ${height}</div>
-      <div>weight: ${weight}</div>
-      <div>picture: <br> <img src="${picture}" onmouseover="this.src='${back_pic}';" onmouseout="this.src='${picture}';"/></div>
-      <div id="types"><ul>types:<li id>${typesList}</li></ul></div>
-      </div>`;
+      picText = `<div>picture: <br> <img src="${picture}" onmouseover="this.src='${back_pic}';" onmouseout="this.src='${picture}';"/></div>`;
     } else {
-      htmlText = `
-    <div class="pokemonContainer">
-      <div>Name: ${name}</div>
-      <div>height: ${height}</div>
-      <div>weight: ${weight}</div>
-      <div>picture: <br> <img src="${back_pic}"></div>
-      <div id="types"><ul>types:<li id>${typesList}</li></ul></div>
-      </div>`;
+      picText = `<div>picture: <br> <img src="${back_pic}"></div>`;
     }
   } else {
     if (picture !==null){
-      htmlText = `
-      <div class="pokemonContainer">
-        <div>Name: ${name}</div>
-        <div>height: ${height}</div>
-        <div>weight: ${weight}</div>
-        <div>picture: <br> <img src="${picture}"></div>
-        <div id="types"><ul>types:<li id>${typesList}</li></ul></div>
-        </div>`;
+      picText = `<div>picture: <br> <img src="${picture}"></div>`;
     } else {
-      htmlText = `
-      <div class="pokemonContainer">
-        <div>Name: ${name}</div>
-        <div>height: ${height}</div>
-        <div>weight: ${weight}</div>
-        <div id="types"><ul>types:<li id>${typesList}</li></ul></div>
-        </div>`;
+      picText = '';
     }
   }
+  const htmlText = `
+    <div class="pokemonContainer">
+      <div>Name: ${name}</div>
+      <div>height: ${height}</div>
+      <div>weight: ${weight}</div>
+      ${picText}
+      <div id="types"><ul>types:<li id>${typesList}</li></ul></div>
+      </div>`;
   pokemonDiv.innerHTML = htmlText;
   let lst = document.getElementById("types").children[0].children;
   for (let i = 0; i < lst.length; i++){
